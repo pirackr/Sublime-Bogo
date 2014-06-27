@@ -53,18 +53,18 @@ class BogoCommand(sublime_plugin.TextCommand):
             return
 
         # Get current word
-        selection = selections[0]
-        region = self.view.word(selection)
-        st = self.view.substr(region)
+        for selection in selections:
+            region = self.view.word(selection)
+            st = self.view.substr(region)
 
-        if RULE == 'Telex':
-            rule = core.get_telex_definition()
-        else:
-            rule = core.get_vni_definition()
+            if RULE == 'Telex':
+                rule = core.get_telex_definition()
+            else:
+                rule = core.get_vni_definition()
 
-        if len(st) > 0:
-            replace = core.process_sequence(st, rule)
-            # Ok, it's a Vietnamese input
-            if replace != st:
-                self.view.replace(edit, region, replace)
-                MODIFIED = True
+            if len(st) > 0:
+                replace = core.process_sequence(st, rule)
+                # Ok, it's a Vietnamese input
+                if replace != st:
+                    self.view.replace(edit, region, replace)
+                    MODIFIED = True

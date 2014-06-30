@@ -1,4 +1,4 @@
-The subdirectory `/bogo` is a subtree that is managed by `git subtree`. It's
+The subdirectory `/bogo` is a subtree that is managed by `git subtree`. Its
 original remote is https://github.com/BoGoEngine/bogo-python. It was added
 by the following command:
 

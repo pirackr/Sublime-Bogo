@@ -10,8 +10,6 @@ plugin manually. Sorry for the inconvenience.
 ```bash
 $ cd ~/.config/sublime-text-3/Packages/
 $ git clone https://github.com/pirackr/Sublime-Bogo.git
-$ cd Sublime-Bogo
-$ git submodule init && git submodule update
 ```
 
 Every once in a while, you can update it with the following commands:
@@ -20,7 +18,6 @@ Every once in a while, you can update it with the following commands:
 $ cd ~/.config/sublime-text-3/Packages/Sublime-Bogo
 $ git reset --hard
 $ git pull origin master
-$ git submodule update
 ```
 
 By default, the shortcut to turn it on/off is **Alt + Z**.

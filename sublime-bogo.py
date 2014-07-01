@@ -1,13 +1,13 @@
 import sys
-import sublime, sublime_plugin
+import sublime
+import sublime_plugin
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), 'bogo/'))
 from bogo import core
 
 
-STATUS = True 
+STATUS = True
 MODIFIED = False
-RULE = 'Telex'
 
 
 class BogoListener(sublime_plugin.EventListener):
@@ -31,16 +31,6 @@ class BogoEnableToggleCommand(sublime_plugin.TextCommand):
         else:
             STATUS = True
         self.view.set_status('BogoEnabled', str(STATUS))
-
-
-class BogoChangeRuleCommand(sublime_plugin.TextCommand):
-    def run(self, edit):
-        global RULE
-        if RULE == 'Telex':
-            RULE = 'VNI'
-        else:
-            RULE = 'Telex'
-        self.view.set_status('BogoRule', RULE)
 
 
 class BogoCommand(sublime_plugin.TextCommand):

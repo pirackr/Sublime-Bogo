@@ -21,6 +21,22 @@ def only_if_enabled(function):
     return inner
 
 
+def update_status_line():
+    for window in sublime.windows():
+        for view in window.views():
+            view.set_status('bogo.enabled', 'BoGo: ' + ('OFF', 'ON')[ENABLED])
+
+
+def plugin_loaded():
+    update_status_line()
+
+
+def plugin_unloaded():
+    for window in sublime.windows():
+        for view in window.views():
+            view.erase_status('bogo.enabled')
+
+
 class BogoListener(sublime_plugin.EventListener):
 
     def __init__(self, *args, **kwargs):
@@ -69,10 +85,12 @@ class BogoListener(sublime_plugin.EventListener):
             view.run_command('bogo', bogo_args)
 
         self.editing_lock = False
+        update_status_line()
 
     @only_if_enabled
     def on_window_command(self, window, command_name, args):
         self.other_command = True
+        update_status_line()
 
     @only_if_enabled
     def on_text_command(self, view, command_name, args):
@@ -95,6 +113,7 @@ class BogoListener(sublime_plugin.EventListener):
             view.run_command('bogo', {'command': 'reset'})
 
         self.editing_lock = False
+        update_status_line()
         return self.new_text_command
 
     # This will be called by the BogoCommand to determine whether we
@@ -110,7 +129,8 @@ class BogoEnableToggleCommand(sublime_plugin.TextCommand):
             ENABLED = False
         else:
             ENABLED = True
-        self.view.set_status('BogoEnabled', str(ENABLED))
+
+        update_status_line()
 
 
 class BogoCommand(sublime_plugin.TextCommand):

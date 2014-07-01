@@ -25,7 +25,6 @@ $ cd ~/.config/sublime-text-3/Packages/Sublime-Bogo
 $ git reset --hard
 $ git pull origin master
 ```
-
 Configuring
 ===========
 

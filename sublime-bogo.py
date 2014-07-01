@@ -149,12 +149,15 @@ class BogoCommand(sublime_plugin.TextCommand):
 
     def on_new_char(self, char):
         if not char in self.accepted_chars():
-            self.view.insert(self.edit, self.view.sel()[0].begin(), char)
+            self.reset()
+            self.commit(char)
             self.reset()
         else:
-            if self.sequence == "":
+            if self.sequence == "" and len(self.view.sel()) == 1:
                 # Try to continue from the existing string at the cursor
-                # position.
+                # position only if there is only one cursor.
+                # Things would get weird if there are several cursors
+                # with different words under each.
                 word_under_cursor = self.view.substr(
                     self.view.word(self.view.sel()[0]))
 
@@ -188,13 +191,14 @@ class BogoCommand(sublime_plugin.TextCommand):
         chars_to_delete = len(
             self.previously_committed_string) - len(same_initial_chars)
 
-        cursor = self.view.sel()[0]
-        replace_region = sublime.Region(
-            cursor.begin() - chars_to_delete, cursor.end())
-        replace_with = string[len(same_initial_chars):]
+        # We have multiple cursors.
+        for cursor in self.view.sel():
+            replace_region = sublime.Region(
+                cursor.begin() - chars_to_delete, cursor.end())
+            replace_with = string[len(same_initial_chars):]
 
-        self.view.erase(self.edit, replace_region)
-        self.view.insert(self.edit, replace_region.begin(), replace_with)
+            self.view.erase(self.edit, replace_region)
+            self.view.insert(self.edit, replace_region.begin(), replace_with)
 
         self.previously_committed_string = string
 

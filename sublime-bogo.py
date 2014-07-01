@@ -11,7 +11,7 @@ MODIFIED = False
 
 
 class BogoListener(sublime_plugin.EventListener):
-    def on_modified(self, view):
+    def on_selection_modified(self, view):
         global STATUS, MODIFIED
 
         if not STATUS:

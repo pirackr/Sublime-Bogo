@@ -40,7 +40,7 @@ def plugin_unloaded():
 class BogoListener(sublime_plugin.EventListener):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(BogoListener, self).__init__(*args, **kwargs)
 
         global LISTENER
         self.other_command = False
@@ -136,7 +136,7 @@ class BogoEnableToggleCommand(sublime_plugin.TextCommand):
 class BogoCommand(sublime_plugin.TextCommand):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(BogoCommand, self).__init__(*args, **kwargs)
         self.reset()
 
     def reset(self):
@@ -168,7 +168,7 @@ class BogoCommand(sublime_plugin.TextCommand):
             self.on_left_delete()
 
     def on_new_char(self, char):
-        if not char in self.accepted_chars():
+        if char not in self.accepted_chars():
             self.reset()
             self.commit(char)
             self.reset()

@@ -44,9 +44,33 @@ class BogoChangeRuleCommand(sublime_plugin.TextCommand):
 
 
 class BogoCommand(sublime_plugin.TextCommand):
+    def getRule(self):
+        """
+        Get bogo rule definition from setting
+
+        Parameters
+        ----------
+
+        Return
+        ------
+        definition : dict
+            A dictionary of bogo rule definition, be used as parameter of
+            process_key() method.
+        """
+        # cast setting to str, then in case users give a wrong input, it should
+        # fallback to Telex rule
+        bogoRule =\
+            str(sublime.load_settings('Bogo.sublime-settings')
+                .get('bogo-rule')).upper()
+
+        if bogoRule == 'VNI':
+            return core.get_vni_definition()
+        else:
+            return core.get_telex_definition()
+
     # Text command which replace Vietnamese
     def run(self, edit):
-        global MODIFIED, RULE
+        global MODIFIED
         selections = self.view.sel()
 
         if not selections:
@@ -57,13 +81,8 @@ class BogoCommand(sublime_plugin.TextCommand):
             region = self.view.word(selection)
             st = self.view.substr(region)
 
-            if RULE == 'Telex':
-                rule = core.get_telex_definition()
-            else:
-                rule = core.get_vni_definition()
-
             if len(st) > 0:
-                replace = core.process_sequence(st, rule)
+                replace = core.process_sequence(st, self.getRule())
                 # Ok, it's a Vietnamese input
                 if replace != st:
                     self.view.replace(edit, region, replace)

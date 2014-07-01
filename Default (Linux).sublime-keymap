@@ -1,4 +1,3 @@
 [
-	{ "keys": ["alt+z"], "command": "bogo_enable_toggle" },
-	{ "keys": ["ctrl+shift+tab"], "command": "bogo_change_rule"},
+	{ "keys": ["alt+z"], "command": "bogo_enable_toggle" }
 ]

@@ -184,3 +184,8 @@ class TestProcessSeq():
         # eq_(process_sequence("aans.tuongwj"), "ấn.tượng")
         eq_(process_sequence("gi[f"), "giờ")
         # eq_(process_sequence("taojc"), "taojc")
+
+    def test_with_separator(self):
+        eq_(process_sequence('con meof dideen'), 'con mèo điên')
+        eq_(process_sequence('con.meof'), 'con.mèo')
+        eq_(process_sequence('con?meof'), 'con?mèo')

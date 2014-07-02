@@ -125,11 +125,7 @@ class BogoListener(sublime_plugin.EventListener):
 class BogoEnableToggleCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         global ENABLED
-        if ENABLED:
-            ENABLED = False
-        else:
-            ENABLED = True
-
+        ENABLED = not ENABLED
         update_status_line()
 
 

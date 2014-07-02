@@ -13,6 +13,14 @@ ENABLED = True
 LISTENER = None
 
 
+# OK, this is how it works. We create keybindings for most printable
+# character to call BogoKeyCommand, which passes the key to BogoCommand, which
+# calls bogo.process_sequence() and updates the screen.
+#
+# Every other change to the document is captured by BogoListener, which asks
+# BogoCommand to handle or to reset if the change doesn't make sense.
+
+
 def only_if_enabled(function):
     def inner(*args, **kwargs):
         if ENABLED:
@@ -25,6 +33,7 @@ def update_status_line():
     for window in sublime.windows():
         for view in window.views():
             view.set_status('bogo.enabled', 'BoGo: ' + ('OFF', 'ON')[ENABLED])
+            view.settings().set('bogo.enabled', ENABLED)
 
 
 def plugin_loaded():
@@ -47,44 +56,13 @@ class BogoListener(sublime_plugin.EventListener):
         self.editing_lock = False
         LISTENER = self
 
-    # This gets called every time the cursor is moved and is where we detect
-    # user's key presses.
     @only_if_enabled
     def on_selection_modified(self, view):
-
-        if self.editing_lock:
-            return
-
-        # If a special command happens (left_delete, move,...),
-        # on_window_command and on_text_command is always called first.
-        # We don't care about special commands, just regular key presses.
         if self.other_command:
             self.other_command = False
             return
 
-        view = sublime.active_window().active_view()
-
-        # FIXME: Abstract this into a context manager?
-        self.editing_lock = True
-
-        # Find the char that has just been typed in
-        cursor = view.sel()[0]
-        if cursor.begin() == cursor.end():
-            cursor = sublime.Region(cursor.begin() - 1, cursor.end())
-            new_char = view.substr(cursor)
-
-            # Delete that new char
-            view.run_command('left_delete')
-
-            bogo_args = {
-                "command": "new_char",
-                "args": {
-                    "char": new_char
-                }
-            }
-            view.run_command('bogo', bogo_args)
-
-        self.editing_lock = False
+        view.run_command('bogo', {'command': 'reset'})
         update_status_line()
 
     @only_if_enabled
@@ -105,14 +83,13 @@ class BogoListener(sublime_plugin.EventListener):
         self.other_command = True
         self.new_text_command = None
 
-        self.editing_lock = True
-
         if command_name == "left_delete":
             view.run_command('bogo', {"command": command_name})
+        elif command_name == "bogo_key":
+            pass
         else:
             view.run_command('bogo', {'command': 'reset'})
 
-        self.editing_lock = False
         update_status_line()
         return self.new_text_command
 
@@ -127,6 +104,19 @@ class BogoEnableToggleCommand(sublime_plugin.TextCommand):
         global ENABLED
         ENABLED = not ENABLED
         update_status_line()
+
+
+class BogoKeyCommand(sublime_plugin.TextCommand):
+    def run(self, edit, key):
+        LISTENER.other_command = True
+        bogo_args = {
+            "command": "new_char",
+            "args": {
+                "char": key
+            }
+        }
+
+        self.view.run_command('bogo', bogo_args)
 
 
 class BogoCommand(sublime_plugin.TextCommand):

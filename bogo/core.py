@@ -28,6 +28,8 @@ from __future__ import unicode_literals
 from bogo.validation import is_valid_combination
 from bogo import utils, accent, mark
 import logging
+import sys
+import string
 
 
 Mark = mark.Mark
@@ -97,9 +99,18 @@ def get_vni_definition():
     }
 
 
-def _is_processable(comps):
-    # For now only check the last 2 components
-    return is_valid_combination(('', comps[1], comps[2]), final_form=False)
+def _accepted_chars(rules):
+    if sys.version_info[0] > 2:
+        accepted_chars = \
+            string.ascii_letters + \
+            ''.join(rules.keys())
+    else:
+        accepted_chars = \
+            string.lowercase + \
+            string.uppercase + \
+            ''.join(rules.keys())
+
+    return accepted_chars
 
 
 def process_sequence(sequence,
@@ -111,19 +122,34 @@ def process_sequence(sequence,
     Args:
         rules (optional): see docstring for process_key().
         skip_non_vietnamese (optional): see docstring for process_key().
+
+    It even supports continous key sequences connected by separators.
+    i.e. process_sequence('con meof.ddieen') should work.
     """
     result = ""
     raw = result
+    result_parts = []
+    if rules is None:
+        rules = get_telex_definition()
+
+    accepted_chars = _accepted_chars(rules)
 
     for key in sequence:
-        result, raw = process_key(
-            string=result,
-            key=key,
-            fallback_sequence=raw,
-            rules=rules,
-            skip_non_vietnamese=skip_non_vietnamese)
+        if key not in accepted_chars:
+            result_parts.append(result)
+            result_parts.append(key)
+            result = ""
+            raw = ""
+        else:
+            result, raw = process_key(
+                string=result,
+                key=key,
+                fallback_sequence=raw,
+                rules=rules,
+                skip_non_vietnamese=skip_non_vietnamese)
 
-    return result
+    result_parts.append(result)
+    return ''.join(result_parts)
 
 
 def process_key(string, key,

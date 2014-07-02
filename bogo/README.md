@@ -43,3 +43,8 @@ Some functions from `bogo.core` are exported to package toplevel:
 - `get_vni_definition()`
 
 BoGo is extensively tested with Python 2.7, Python 3.2 and Python 3.3.
+
+Etymology
+---------
+
+BoGo, or more precisely *bộ gõ*, literally means *input method* in Vietnamese.

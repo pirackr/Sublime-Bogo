@@ -3,7 +3,6 @@ import sublime
 import sublime_plugin
 import os
 from itertools import takewhile
-import string
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'bogo/'))
 from bogo import core
@@ -129,19 +128,6 @@ class BogoCommand(sublime_plugin.TextCommand):
         self.sequence = ""
         self.previously_committed_string = ""
 
-    def accepted_chars(self):
-        if sys.version_info[0] > 2:
-            accepted_chars = \
-                string.ascii_letters + \
-                ''.join(self.getRule().keys())
-        else:
-            accepted_chars = \
-                string.lowercase + \
-                string.uppercase + \
-                ''.join(self.getRule().keys())
-
-        return accepted_chars
-
     # Command dispatcher
     def run(self, edit, command, args={}):
         self.edit = edit
@@ -154,27 +140,22 @@ class BogoCommand(sublime_plugin.TextCommand):
             self.on_left_delete()
 
     def on_new_char(self, char):
-        if char not in self.accepted_chars():
-            self.reset()
-            self.commit(char)
-            self.reset()
-        else:
-            if self.sequence == "" and len(self.view.sel()) == 1:
-                # Try to continue from the existing string at the cursor
-                # position only if there is only one cursor.
-                # Things would get weird if there are several cursors
-                # with different words under each.
-                word_under_cursor = self.view.substr(
-                    self.view.word(self.view.sel()[0]))
+        if self.sequence == "" and len(self.view.sel()) == 1:
+            # Try to continue from the existing string at the cursor
+            # position only if there is only one cursor.
+            # Things would get weird if there are several cursors
+            # with different words under each.
+            word_under_cursor = self.view.substr(
+                self.view.word(self.view.sel()[0]))
 
-                if word_under_cursor.isalpha():
-                    self.sequence = word_under_cursor
+            if word_under_cursor.isalpha():
+                self.sequence = word_under_cursor
 
-                self.previously_committed_string = self.sequence
+            self.previously_committed_string = self.sequence
 
-            self.sequence += char
-            result = core.process_sequence(self.sequence)
-            self.commit(result)
+        self.sequence += char
+        result = core.process_sequence(self.sequence)
+        self.commit(result)
 
     def on_left_delete(self):
         # NOTE: We are not deleting from the text on the screen but from

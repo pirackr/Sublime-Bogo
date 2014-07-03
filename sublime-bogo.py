@@ -20,14 +20,6 @@ LISTENER = None
 # BogoCommand to handle or to reset if the change doesn't make sense.
 
 
-def only_if_enabled(function):
-    def inner(*args, **kwargs):
-        if ENABLED:
-            return function(*args, **kwargs)
-
-    return inner
-
-
 def update_status_line():
     for window in sublime.windows():
         for view in window.views():
@@ -51,51 +43,19 @@ class BogoListener(sublime_plugin.EventListener):
         super(BogoListener, self).__init__(*args, **kwargs)
 
         global LISTENER
-        self.other_command = False
-        self.editing_lock = False
         LISTENER = self
+        self.other_command = False
 
-    @only_if_enabled
     def on_selection_modified(self, view):
         if self.other_command:
             self.other_command = False
             return
 
+        if not ENABLED:
+            return
+
         view.run_command('bogo', {'command': 'reset'})
         update_status_line()
-
-    @only_if_enabled
-    def on_window_command(self, window, command_name, args):
-        self.other_command = True
-        update_status_line()
-
-    @only_if_enabled
-    def on_text_command(self, view, command_name, args):
-        """
-        Intercepts text commands before they actually run.
-
-        Return
-            None if we want to let the command run or a tuple of the form
-            ('command_name', {'args':'value'}) to specify a different command
-            to run instead of it.
-        """
-        self.other_command = True
-        self.new_text_command = None
-
-        if command_name == "left_delete":
-            view.run_command('bogo', {"command": command_name})
-        elif command_name == "bogo_key":
-            pass
-        else:
-            view.run_command('bogo', {'command': 'reset'})
-
-        update_status_line()
-        return self.new_text_command
-
-    # This will be called by the BogoCommand to determine whether we
-    # should swallow this text_command.
-    def on_text_command_callback(self, new_command):
-        self.new_text_command = new_command
 
 
 class BogoEnableToggleCommand(sublime_plugin.TextCommand):
@@ -133,11 +93,12 @@ class BogoCommand(sublime_plugin.TextCommand):
         self.edit = edit
 
         if command == "new_char":
-            self.on_new_char(args["char"])
+            if args["char"] == "backspace":
+                self.on_left_delete()
+            else:
+                self.on_new_char(args["char"])
         elif command == "reset":
             self.reset()
-        elif command == "left_delete":
-            self.on_left_delete()
 
     def on_new_char(self, char):
         if self.sequence == "" and len(self.view.sel()) == 1:
@@ -164,14 +125,10 @@ class BogoCommand(sublime_plugin.TextCommand):
         self.sequence = self.sequence[:-1]
         if self.sequence == "":
             self.reset()
+            self.view.run_command('left_delete')
         else:
             result = core.process_sequence(self.sequence)
             self.commit(result)
-
-            # NOTE: blank_command is just a made up command. It doesn't exist
-            # (at least I think it doesn't) so ST will do nothing.
-            # Therfore, we effectively swallow the backspace key.
-            LISTENER.on_text_command_callback(("blank_command", {}))
 
     def commit(self, string):
         same_initial_chars = list(

@@ -8,7 +8,7 @@
     // {"keys": ["end"], "command": "bogo_key", "args": {"key": "end"}, "context": [{"key": "setting.bogo.enabled", "operator": "equal", "operand": true}, {"key": "setting.command_mode", "operand": false}]},
     // {"keys": ["pageup"], "command": "bogo_key", "args": {"key": "pageup"}, "context": [{"key": "setting.bogo.enabled", "operator": "equal", "operand": true}, {"key": "setting.command_mode", "operand": false}]},
     // {"keys": ["pagedown"], "command": "bogo_key", "args": {"key": "pagedown"}, "context": [{"key": "setting.bogo.enabled", "operator": "equal", "operand": true}, {"key": "setting.command_mode", "operand": false}]},
-    // {"keys": ["backspace"], "command": "bogo_key", "args": {"key": "backspace"}, "context": [{"key": "setting.bogo.enabled", "operator": "equal", "operand": true}, {"key": "setting.command_mode", "operand": false}]},
+    {"keys": ["backspace"], "command": "bogo_key", "args": {"key": "backspace"}, "context": [{"key": "setting.bogo.enabled", "operator": "equal", "operand": true}, {"key": "setting.command_mode", "operand": false}]},
     // {"keys": ["delete"], "command": "bogo_key", "args": {"key": "delete"}, "context": [{"key": "setting.bogo.enabled", "operator": "equal", "operand": true}, {"key": "setting.command_mode", "operand": false}]},
     // {"keys": ["tab"], "command": "bogo_key", "args": {"key": "tab"}, "context": [{"key": "setting.bogo.enabled", "operator": "equal", "operand": true}, {"key": "setting.command_mode", "operand": false}]},
     // {"keys": ["enter"], "command": "bogo_key", "args": {"key": "enter"}, "context": [{"key": "setting.bogo.enabled", "operator": "equal", "operand": true}, {"key": "setting.command_mode", "operand": false}]},

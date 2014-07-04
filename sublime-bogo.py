@@ -8,7 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'bogo/'))
 from bogo import core
 
 
-ENABLED = True
+ENABLED = False
 LISTENER = None
 
 

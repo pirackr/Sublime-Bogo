@@ -189,3 +189,7 @@ class TestProcessSeq():
         eq_(process_sequence('con meof dideen'), 'con mèo điên')
         eq_(process_sequence('con.meof'), 'con.mèo')
         eq_(process_sequence('con?meof'), 'con?mèo')
+
+    def test_change_tone(self):
+        eq_(process_sequence('meofs'), 'méo')
+        eq_(process_sequence('mèos'), 'méo')

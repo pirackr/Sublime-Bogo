@@ -101,16 +101,14 @@ def get_vni_definition():
 
 def _accepted_chars(rules):
     if sys.version_info[0] > 2:
-        accepted_chars = \
-            string.ascii_letters + \
-            ''.join(rules.keys())
+        ascii_letters = \
+            string.ascii_letters
     else:
-        accepted_chars = \
+        ascii_letters = \
             string.lowercase + \
-            string.uppercase + \
-            ''.join(rules.keys())
+            string.uppercase
 
-    return accepted_chars
+    return set(ascii_letters + ''.join(rules.keys()) + utils.VOWELS + "đ")
 
 
 def process_sequence(sequence,

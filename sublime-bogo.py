@@ -149,27 +149,3 @@ class BogoCommand(sublime_plugin.TextCommand):
             self.view.insert(self.edit, replace_region.begin(), replace_with)
 
         self.previously_committed_string = string
-
-    def getRule(self):
-        """
-        Get bogo rule definition from setting
-
-        Parameters
-        ----------
-
-        Return
-        ------
-        definition : dict
-            A dictionary of bogo rule definition, be used as parameter of
-            process_key() method.
-        """
-        # cast setting to str, then in case users give a wrong input, it should
-        # fallback to Telex rule
-        bogoRule = \
-            str(sublime.load_settings('Bogo.sublime-settings')
-                .get('bogo-rule')).upper()
-
-        if bogoRule == 'VNI':
-            return core.get_vni_definition()
-        else:
-            return core.get_telex_definition()

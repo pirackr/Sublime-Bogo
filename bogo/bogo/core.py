@@ -487,3 +487,35 @@ def _can_undo(comps, trans_list):
                     accent.remove_accent_char(comps[1][-1]))  # ơ, ư
 
     return any(map(atomic_check, action_list))
+
+
+def handle_backspace(converted_string, raw_sequence):
+    """
+    Returns a new converted_string and a new raw_sequence
+    after a backspace.
+    """
+    # I can't find a simple explanation for this, so
+    # I hope this example can help clarify it:
+    #
+    # handle_backspace(thương, thuwongw) -> (thươn, thuwonw)
+    # handle_backspace(thươn, thuwonw) -> (thươ, thuwow)
+    # handle_backspace(thươ, thuwow) -> (thư, thuw)
+    # handle_backspace(thươ, thuw) -> (th, th)
+    #
+    # The algorithm for handle_backspace was contributed by @hainp.
+
+    deleted_char = converted_string[-1]
+    converted_string = converted_string[:-1]
+
+    _accent = accent.get_accent_char(deleted_char)
+    _mark = mark.get_mark_char(deleted_char)
+
+    if _mark and _accent:
+        raw_sequence = raw_sequence[:-3]
+    elif _mark or _accent:
+        raw_sequence = raw_sequence[:-2]
+    else:
+        index = raw_sequence.rfind(deleted_char)
+        raw_sequence = raw_sequence[:index] + raw_sequence[(index + 1):]
+
+    return converted_string, raw_sequence

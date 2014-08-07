@@ -6,7 +6,7 @@ from nose.plugins.attrib import attr
 from functools import partial
 import codecs
 
-from bogo.core import _Action, _get_action, process_sequence
+from bogo.core import _Action, _get_action, process_sequence, handle_backspace
 from bogo.mark import Mark
 import os
 
@@ -193,3 +193,20 @@ class TestProcessSeq():
     def test_change_tone(self):
         eq_(process_sequence('meofs'), 'méo')
         eq_(process_sequence('mèos'), 'méo')
+
+
+class TestHandleBackspace():
+
+	def test_delete_non_im_key(self):
+		eq_(handle_backspace('an', 'an'), ('a', 'a'))
+		eq_(handle_backspace('a', 'a'), ('', ''))
+
+	def test_delete_one_im_key(self):
+		eq_(handle_backspace('bà', 'baf'), ('b', 'b'))
+		eq_(handle_backspace('bâ', 'baa'), ('b', 'b'))
+
+	def test_delete_two_im_keys(self):
+		eq_(handle_backspace('bớ', 'bows'), ('b', 'b'))
+	
+	def test_non_im_key_before_im_key(self):
+		eq_(handle_backspace('bân', 'bana'), ('bâ', 'baa'))

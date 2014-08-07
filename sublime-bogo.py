@@ -119,16 +119,15 @@ class BogoCommand(sublime_plugin.TextCommand):
         self.commit(result)
 
     def on_left_delete(self):
-        # NOTE: We are not deleting from the text on the screen but from
-        # the raw key sequence. As such, the backspace key doubles as
-        # an undo key. This may be confusing for some users.
-        self.sequence = self.sequence[:-1]
         if self.sequence == "":
             self.reset()
             self.view.run_command('left_delete')
         else:
-            result = core.process_sequence(self.sequence)
-            self.commit(result)
+            new_converted_string, self.sequence = \
+                core.handle_backspace(
+                    self.previously_committed_string,self.sequence)
+
+            self.commit(new_converted_string)
 
     def commit(self, string):
         same_initial_chars = list(

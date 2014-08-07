@@ -28,4 +28,5 @@ from bogo.core import \
     process_key, \
     process_sequence, \
     get_telex_definition, \
-    get_vni_definition
+    get_vni_definition, \
+    handle_backspace

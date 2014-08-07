@@ -5,12 +5,12 @@ from distutils.core import setup
 setup(
     name='bogo',
     packages=['bogo'],
-    version='1.0.1',
+    version='1.1',
     description='Library for implementing Vietnamese input method editors with a purely functional interface.',
     author='Trung Ngo',
     author_email='ndtrung4419@gmail.com',
     url='https://github.com/BoGoEngine/bogo-python',
-    download_url='https://github.com/BoGoEngine/bogo-python/archive/v1.0.tar.gz',
+    download_url='https://github.com/BoGoEngine/bogo-python/archive/v1.1.tar.gz',
     keywords=['vietnamese'],
     classifiers=[
         "Programming Language :: Python",

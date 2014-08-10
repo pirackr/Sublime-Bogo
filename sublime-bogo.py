@@ -115,6 +115,7 @@ class BogoCommand(sublime_plugin.TextCommand):
             self.previously_committed_string = self.sequence
 
         self.sequence += char
+        # FIXME: We are not using the `rules` argument
         result = core.process_sequence(self.sequence)
         self.commit(result)
 
@@ -123,11 +124,11 @@ class BogoCommand(sublime_plugin.TextCommand):
             self.reset()
             self.view.run_command('left_delete')
         else:
-            new_converted_string, self.sequence = \
-                core.handle_backspace(
-                    self.previously_committed_string,self.sequence)
+            # FIXME: We are not using the `im_rules` argument
+            self.sequence = core.handle_backspace(
+                self.previously_committed_string,self.sequence)
 
-            self.commit(new_converted_string)
+            self.commit(core.process_sequence(self.sequence))
 
     def commit(self, string):
         same_initial_chars = list(

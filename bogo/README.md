@@ -4,8 +4,7 @@ BoGo
 [![Build Status](https://travis-ci.org/BoGoEngine/bogo-python.svg?branch=master)](https://travis-ci.org/BoGoEngine/bogo-python)
 [![Coverage Status](https://coveralls.io/repos/BoGoEngine/bogo-python/badge.png?branch=master)](https://coveralls.io/r/BoGoEngine/bogo-python?branch=master)
 
-BoGo is a Vietnamese input method conversion library for Python. This library
-is intentionally functional with no internal state and side-effect.
+BoGo is a Vietnamese input method conversion library for Python.
 
 Installation
 ------------

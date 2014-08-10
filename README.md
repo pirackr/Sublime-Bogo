@@ -1,52 +1,49 @@
-Sublime-BoGo
-============
+BoGo
+====
 
-Vietnamese input method for Sublime Text 2 and 3 using the
-[BoGo engine](https://github.com/BoGoEngine/bogo-python).
+[![Build Status](https://travis-ci.org/BoGoEngine/bogo-python.svg?branch=master)](https://travis-ci.org/BoGoEngine/bogo-python)
+[![Coverage Status](https://coveralls.io/repos/BoGoEngine/bogo-python/badge.png?branch=master)](https://coveralls.io/r/BoGoEngine/bogo-python?branch=master)
+
+BoGo is a Vietnamese input method conversion library for Python.
 
 Installation
-============
-
-The preferred way to install this plugin is through Package Control. 
-[Install it][1] and [search for **BoGo**][2]. Package Control will 
-handle automatic update so you don't have to.
-
-Of course, if you want, manually installation is possible as well:
+------------
 
 ```bash
-$ cd ~/.config/sublime-text-3/Packages/
-$ git clone https://github.com/pirackr/Sublime-Bogo.git
+pip install bogo
 ```
 
-Every once in a while, you can update it with the following commands:
+Usage
+-----
 
-```bash
-$ cd ~/.config/sublime-text-3/Packages/Sublime-Bogo
-$ git reset --hard
-$ git pull origin master
+```python
+>>> import bogo
+>>> bogo.process_sequence('meof')
+'mèo'
+>>> bogo.process_sequence('meo2', rules=bogo.get_vni_definition())
+'mèo'
+>>> bogo.process_sequence('system')
+'system'
+>>> bogo.process_sequence('system', skip_non_vietnamese=False)
+'sýtem'
 ```
 
-[1]: https://sublime.wbond.net/installation
-[2]: https://sublime.wbond.net/docs/usage
+More help available with:
 
-Configuration
-=============
-
-After installing, your status line will update to say **BoGo: ON** or **BoGo:
-OFF**. The default hotkey to turn it on/off is `Alt + Z`. You can change it
-through the `Default.sublime-keymap` file:
-
-```json
-[
-	{ "keys": ["alt+z"], "command": "bogo_enable_toggle" }
-]
+```python
+>>> help(bogo.core)
 ```
 
-BoGo supports the Telex and Vni typing styles, with Telex being the default.
-If you want to change it, edit `Bogo.sublime-settings`:
+Some functions from `bogo.core` are exported to package toplevel:
 
-```json
-{
-    "bogo-rule" : "Telex"
-}
-```
+- `process_key()`
+- `process_sequence()`
+- `get_telex_definition()`
+- `get_vni_definition()`
+
+BoGo is extensively tested with Python 2.7, Python 3.2 and Python 3.3.
+
+Etymology
+---------
+
+BoGo, or more precisely *bộ gõ*, literally means *input method* in Vietnamese.
